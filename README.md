@@ -1,1 +1,1 @@
-# golang kit
+# structure kit
