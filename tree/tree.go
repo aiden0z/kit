@@ -1,7 +1,8 @@
 package tree
 
-type TreeNode struct {
+// Node describe the tree node
+type Node struct {
 	Element interface{}
-	Left    *TreeNode
-	Right   *TreeNode
+	Left    *Node
+	Right   *Node
 }

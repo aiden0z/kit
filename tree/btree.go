@@ -5,11 +5,12 @@ import (
 	"fmt"
 )
 
-type Btree TreeNode
+// Btree describe a binary tree
+type Btree Node
 
-// indexWithInOrder find the k's index in inOrder
-func indexWithInOrder(k interface{}, inOrder []interface{}) int {
-	for i, v := range inOrder {
+// indexInSlice  find the k's index in slice
+func indexInSlice(k interface{}, slice []interface{}) int {
+	for i, v := range slice {
 		if v == k {
 			return i
 		}
@@ -24,6 +25,7 @@ func NewBtreeWithPreInOrder(preOrder, inOrder []interface{}) (btree *Btree, err 
 		if r := recover(); r != nil {
 			switch r.(type) {
 			case error:
+				fmt.Println(r)
 				err = errors.New("invalid order sequence")
 			default:
 				err = errors.New("Unknown panic")
@@ -44,37 +46,80 @@ func NewBtreeWithPreInOrder(preOrder, inOrder []interface{}) (btree *Btree, err 
 		return
 	}
 
-	rootIndex := indexWithInOrder(preOrder[0], inOrder)
+	rootIndex := indexInSlice(preOrder[0], inOrder)
 
 	btree = &Btree{
 		Element: preOrder[0],
 	}
 
-	if node, e := NewBtreeWithPreInOrder(preOrder[1:rootIndex+1], inOrder[:rootIndex]); e != nil {
-		return nil, e
-	} else {
-		btree.Left = (*TreeNode)(node)
+	node, err := NewBtreeWithPreInOrder(preOrder[1:rootIndex+1], inOrder[:rootIndex])
+	if err != nil {
+		return nil, err
+	}
+	btree.Left = (*Node)(node)
+
+	node, err = NewBtreeWithPreInOrder(preOrder[1+rootIndex:], inOrder[1+rootIndex:])
+	if err != nil {
+		return nil, err
 	}
 
-	if node, e := NewBtreeWithPreInOrder(preOrder[1+rootIndex:], inOrder[1+rootIndex:]); e != nil {
-		return nil, e
-
-	} else {
-		btree.Right = (*TreeNode)(node)
-	}
+	btree.Right = (*Node)(node)
 	return btree, nil
 }
 
 // NewBtreeWithPostInOrder create a binary tree based on POST and IN order
-func NewBtreeWithPostInOrder(postOrder, inOrder []interface{}, offset int) *Btree {
-	return nil
+func NewBtreeWithPostInOrder(postOrder, inOrder []interface{}) (btree *Btree, err error) {
+
+	defer func() {
+		if r := recover(); r != nil {
+			switch r.(type) {
+			case error:
+				err = errors.New("invalid order sequence")
+			default:
+				err = errors.New("Unknown panic")
+			}
+		}
+	}()
+
+	if err != nil {
+		return
+	}
+
+	if len(postOrder) == 0 {
+		return btree, nil
+	}
+
+	if len(postOrder) != len(inOrder) {
+		err = fmt.Errorf("length of order sequence not equal")
+		return
+	}
+
+	rootIndex := indexInSlice(postOrder[len(postOrder)-1], inOrder)
+
+	btree = &Btree{
+		Element: postOrder[len(postOrder)-1],
+	}
+
+	node, err := NewBtreeWithPostInOrder(postOrder[:rootIndex], inOrder[:rootIndex])
+	if err != nil {
+		return nil, err
+	}
+	btree.Left = (*Node)(node)
+
+	node, err = NewBtreeWithPostInOrder(postOrder[rootIndex:len(postOrder)-1], inOrder[1+rootIndex:])
+	if err != nil {
+		return nil, err
+	}
+
+	btree.Right = (*Node)(node)
+	return btree, nil
 
 }
 
 // PreOrder returh the pre order traversal
-func (tree *Btree) PreOrder() (order []*TreeNode) {
+func (tree *Btree) PreOrder() (order []*Node) {
 	if tree != nil {
-		order = append(order, (*TreeNode)(tree))
+		order = append(order, (*Node)(tree))
 		order = append(order, (*Btree)(tree.Left).PreOrder()...)
 		order = append(order, (*Btree)(tree.Right).PreOrder()...)
 	}
@@ -82,23 +127,23 @@ func (tree *Btree) PreOrder() (order []*TreeNode) {
 }
 
 // InOrder return the in order traversal
-func (tree *Btree) InOrder() (order []*TreeNode) {
+func (tree *Btree) InOrder() (order []*Node) {
 	if tree != nil {
 		order = append(order, (*Btree)(tree.Left).InOrder()...)
-		order = append(order, (*TreeNode)(tree))
+		order = append(order, (*Node)(tree))
 		order = append(order, (*Btree)(tree.Right).InOrder()...)
 
 	}
 	return order
 }
 
-// PosrtOrder return the post order traversal
-func (tree *Btree) PostOrder() (order []*TreeNode) {
+// PostOrder return the post order traversal
+func (tree *Btree) PostOrder() (order []*Node) {
 
 	if tree != nil {
 		order = append(order, (*Btree)(tree.Left).PostOrder()...)
 		order = append(order, (*Btree)(tree.Right).PostOrder()...)
-		order = append(order, (*TreeNode)(tree))
+		order = append(order, (*Node)(tree))
 
 	}
 	return order
