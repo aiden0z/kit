@@ -6,20 +6,17 @@ import (
 
 func TestStack(t *testing.T) {
 	emptyStack := NewStack(0)
-	if _, err := emptyStack.Pop(); err != ErrEmptyStack {
-		t.Errorf("Pop from empty stack not return error %v", err)
+	if item := emptyStack.Pop(); item != nil {
+		t.Error("Pop from empty stack not return nil")
 	}
 	fullStack := NewStack(2)
 	if fullStack.Len() != 0 {
-		t.Errorf("Initialize stack error")
+		t.Error("Initialize stack error")
 	}
 	fullStack.Push(1)
 	fullStack.Push(2)
-	value, err := fullStack.Pop()
-	if err != nil {
-		t.Errorf("Pop from stack return error %v", err)
-	}
+	value := fullStack.Pop()
 	if value != 2 {
-		t.Errorf("Value pop from stack not equal to which pushed into")
+		t.Error("Value pop from stack not equal to which pushed into")
 	}
 }

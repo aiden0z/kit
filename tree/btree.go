@@ -1,8 +1,22 @@
+//            Binary tree
+//
+//                      a
+//                    /   \
+//                  b       c
+//               /     \
+//             d        f
+//               \    /
+//                e  g
+//
+// PRE-Order:  a, b, d, e, f, g, c
+// IN-Order:   d, e, b, g, f, a, c
+// POST-Order: e, d, g, f, b, c, a
+
 package tree
 
 import (
 	"errors"
-	"fmt"
+	"github.com/aiden0z/kit/stack"
 )
 
 // Btree describe a binary tree
@@ -25,7 +39,6 @@ func NewBtreeWithPreInOrder(preOrder, inOrder []interface{}) (btree *Btree, err 
 		if r := recover(); r != nil {
 			switch r.(type) {
 			case error:
-				fmt.Println(r)
 				err = errors.New("invalid order sequence")
 			default:
 				err = errors.New("Unknown panic")
@@ -42,7 +55,7 @@ func NewBtreeWithPreInOrder(preOrder, inOrder []interface{}) (btree *Btree, err 
 	}
 
 	if len(preOrder) != len(inOrder) {
-		err = fmt.Errorf("length of order sequence not equal")
+		err = errors.New("length of order sequence not equal")
 		return
 	}
 
@@ -90,7 +103,7 @@ func NewBtreeWithPostInOrder(postOrder, inOrder []interface{}) (btree *Btree, er
 	}
 
 	if len(postOrder) != len(inOrder) {
-		err = fmt.Errorf("length of order sequence not equal")
+		err = errors.New("length of order sequence not equal")
 		return
 	}
 
@@ -116,7 +129,7 @@ func NewBtreeWithPostInOrder(postOrder, inOrder []interface{}) (btree *Btree, er
 
 }
 
-// PreOrder returh the pre order traversal
+// PreOrder return the PRE order traversal
 func (tree *Btree) PreOrder() (order []*Node) {
 	if tree != nil {
 		order = append(order, (*Node)(tree))
@@ -126,7 +139,32 @@ func (tree *Btree) PreOrder() (order []*Node) {
 	return order
 }
 
-// InOrder return the in order traversal
+// PreOrderNonRecursive return the PRE order traversal
+func (tree *Btree) PreOrderNonRecursive() (order []*Node) {
+	if tree == nil {
+		return
+	}
+
+	node := (*Node)(tree)
+	s := stack.NewStack(10)
+
+	for node != nil || !s.IsEmpty() {
+		for node != nil {
+			order = append(order, node)
+			s.Push(node)
+			node = node.Left
+		}
+
+		if !s.IsEmpty() {
+			node = s.Pop().(*Node)
+			node = node.Right
+		}
+	}
+
+	return order
+}
+
+// InOrder return the IN order traversal
 func (tree *Btree) InOrder() (order []*Node) {
 	if tree != nil {
 		order = append(order, (*Btree)(tree.Left).InOrder()...)
@@ -134,6 +172,31 @@ func (tree *Btree) InOrder() (order []*Node) {
 		order = append(order, (*Btree)(tree.Right).InOrder()...)
 
 	}
+	return order
+}
+
+// InOrderNonRecursive return the IN order traversal
+func (tree *Btree) InOrderNonRecursive() (order []*Node) {
+	if tree == nil {
+		return
+	}
+
+	node := (*Node)(tree)
+	s := stack.NewStack(10)
+
+	for node != nil || !s.IsEmpty() {
+		for node != nil {
+			s.Push(node)
+			node = node.Left
+		}
+
+		if !s.IsEmpty() {
+			node = s.Pop().(*Node)
+			order = append(order, node)
+			node = node.Right
+		}
+	}
+
 	return order
 }
 
@@ -147,4 +210,78 @@ func (tree *Btree) PostOrder() (order []*Node) {
 
 	}
 	return order
+}
+
+// PostOrderNonRecursive return the post order traversal
+func (tree *Btree) PostOrderNonRecursive() (order []*Node) {
+	if tree == nil {
+		return
+	}
+
+	current := (*Node)(tree)
+
+	var lastVisited *Node
+
+	s := stack.NewStack(10)
+
+	// push all left child into the stack firstly
+	for current != nil {
+		s.Push(current)
+		current = current.Left
+	}
+
+	for !s.IsEmpty() {
+		current = s.Peek().(*Node)
+		// hand the root node
+		if current.Right == nil || current.Right == lastVisited {
+			order = append(order, current)
+			lastVisited = current
+			s.Pop()
+		} else {
+			// handle the right tree
+			current = current.Right
+			for current != nil {
+				s.Push(current)
+				current = current.Left
+			}
+		}
+	}
+	return
+}
+
+// PostOrderNonRecursiveV1 return the post order traversal
+func (tree *Btree) PostOrderNonRecursiveV1() (order []*Node) {
+	if tree == nil {
+		return
+	}
+
+	current := (*Node)(tree)
+
+	var lastVisited *Node
+
+	s := stack.NewStack(10)
+
+	// push the root node into stack firstly
+	s.Push(current)
+
+	for !s.IsEmpty() {
+		current = s.Peek().(*Node)
+
+		// root node
+		if (current.Left == nil && current.Right == nil) || (lastVisited != nil && (lastVisited == current.Left || lastVisited == current.Right)) {
+			order = append(order, current)
+			s.Pop()
+			lastVisited = current
+		} else {
+			// then push the right node, last left node
+			if current.Right != nil {
+				s.Push(current.Right)
+			}
+			if current.Left != nil {
+				s.Push(current.Left)
+
+			}
+		}
+	}
+	return
 }
