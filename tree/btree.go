@@ -164,6 +164,41 @@ func (tree *Btree) PreOrderNonRecursive() (order []*Node) {
 	return order
 }
 
+// PreOrderMorris return the IN order traversal based on threaded binary tree
+// In In-Order, the right node of current node's predecessor always is nil
+func (tree *Btree) PreOrderMorris() (order []*Node) {
+
+	current := (*Node)(tree)
+	var preNode *Node
+
+	for current != nil {
+		if current.Left == nil {
+			order = append(order, current)
+			current = current.Right
+		} else {
+			// find the current node's predecessor in In-Order
+			preNode = current.Left
+			for preNode.Right != nil && preNode.Right != current {
+				preNode = preNode.Right
+			}
+
+			if preNode.Right == nil {
+				// first time visit, link the right node of current node's predecessor to current node
+				order = append(order, current)
+				preNode.Right = current
+				current = current.Left
+			} else {
+				// second time visit, remove the link set in first time visit, then output the node
+				preNode.Right = nil
+				current = current.Right
+			}
+		}
+
+	}
+
+	return
+}
+
 // InOrder return the IN order traversal
 func (tree *Btree) InOrder() (order []*Node) {
 	if tree != nil {
@@ -198,6 +233,41 @@ func (tree *Btree) InOrderNonRecursive() (order []*Node) {
 	}
 
 	return order
+}
+
+// InOrderMorris return the IN order traversal based on threaded binary tree
+// in In-Order, the right node of current node's predecessor always is nil
+func (tree *Btree) InOrderMorris() (order []*Node) {
+
+	current := (*Node)(tree)
+	var preNode *Node
+
+	for current != nil {
+		if current.Left == nil {
+			order = append(order, current)
+			current = current.Right
+		} else {
+			// find the current node's predecessor in In-Order
+			preNode = current.Left
+			for preNode.Right != nil && preNode.Right != current {
+				preNode = preNode.Right
+			}
+
+			if preNode.Right == nil {
+				// first time visit, link the right node of current node's predecessor to current node
+				preNode.Right = current
+				current = current.Left
+			} else {
+				// second time visit, remove the link set in first time visit, then output the node
+				preNode.Right = nil
+				order = append(order, current)
+				current = current.Right
+			}
+		}
+
+	}
+
+	return
 }
 
 // PostOrder return the post order traversal
@@ -273,15 +343,54 @@ func (tree *Btree) PostOrderNonRecursiveV1() (order []*Node) {
 			s.Pop()
 			lastVisited = current
 		} else {
-			// then push the right node, last left node
+			// then push the right tree
 			if current.Right != nil {
 				s.Push(current.Right)
 			}
+			// pus the left tree
 			if current.Left != nil {
 				s.Push(current.Left)
 
 			}
 		}
 	}
+	return
+}
+
+// PostOrderNonRecursiveV2 return the post order traversal
+func (tree *Btree) PostOrderNonRecursiveV2() (order []*Node) {
+
+	if tree == nil {
+		return
+	}
+
+	s1 := stack.NewStack(10)
+	s2 := stack.NewStack(10)
+
+	current := (*Node)(tree)
+	s1.Push(current)
+
+	// push order: root node -> left tree -> right tree
+	for !s1.IsEmpty() {
+
+		current = s1.Pop().(*Node)
+		s2.Push(current)
+
+		if current.Left != nil {
+			s1.Push(current.Left)
+
+		}
+
+		if current.Right != nil {
+			s1.Push(current.Right)
+		}
+	}
+
+	// reverse the s1, right tree -> left tree -> root node, get the POST traversal order
+	for !s2.IsEmpty() {
+
+		order = append(order, s2.Pop().(*Node))
+	}
+
 	return
 }
