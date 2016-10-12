@@ -32,8 +32,9 @@ func indexInSlice(k interface{}, slice []interface{}) int {
 	return -1
 }
 
-// NewBtreeWithPreInOrder create a binary tree based on PRE and IN order
-func NewBtreeWithPreInOrder(preOrder, inOrder []interface{}) (btree *Btree, err error) {
+// NewBtreeWithInPreOrder create a binary tree based on PRE and IN order
+func NewBtreeWithInPreOrder(inOrder, preOrder []interface{}) (btree *Btree,
+err error) {
 
 	defer func() {
 		if r := recover(); r != nil {
@@ -65,13 +66,13 @@ func NewBtreeWithPreInOrder(preOrder, inOrder []interface{}) (btree *Btree, err 
 		Element: preOrder[0],
 	}
 
-	node, err := NewBtreeWithPreInOrder(preOrder[1:rootIndex+1], inOrder[:rootIndex])
+	node, err := NewBtreeWithInPreOrder(inOrder[:rootIndex], preOrder[1:rootIndex + 1])
 	if err != nil {
 		return nil, err
 	}
 	btree.Left = (*Node)(node)
 
-	node, err = NewBtreeWithPreInOrder(preOrder[1+rootIndex:], inOrder[1+rootIndex:])
+	node, err = NewBtreeWithInPreOrder(inOrder[1 + rootIndex:], preOrder[1 + rootIndex:])
 	if err != nil {
 		return nil, err
 	}
@@ -80,8 +81,9 @@ func NewBtreeWithPreInOrder(preOrder, inOrder []interface{}) (btree *Btree, err 
 	return btree, nil
 }
 
-// NewBtreeWithPostInOrder create a binary tree based on POST and IN order
-func NewBtreeWithPostInOrder(postOrder, inOrder []interface{}) (btree *Btree, err error) {
+// NewBtreeWithInPostOrder create a binary tree based on POST and IN order
+func NewBtreeWithInPostOrder(inOrder, postOrder []interface{}) (btree *Btree,
+err error) {
 
 	defer func() {
 		if r := recover(); r != nil {
@@ -107,19 +109,19 @@ func NewBtreeWithPostInOrder(postOrder, inOrder []interface{}) (btree *Btree, er
 		return
 	}
 
-	rootIndex := indexInSlice(postOrder[len(postOrder)-1], inOrder)
+	rootIndex := indexInSlice(postOrder[len(postOrder) - 1], inOrder)
 
 	btree = &Btree{
-		Element: postOrder[len(postOrder)-1],
+		Element: postOrder[len(postOrder) - 1],
 	}
 
-	node, err := NewBtreeWithPostInOrder(postOrder[:rootIndex], inOrder[:rootIndex])
+	node, err := NewBtreeWithInPostOrder(inOrder[:rootIndex], postOrder[:rootIndex])
 	if err != nil {
 		return nil, err
 	}
 	btree.Left = (*Node)(node)
 
-	node, err = NewBtreeWithPostInOrder(postOrder[rootIndex:len(postOrder)-1], inOrder[1+rootIndex:])
+	node, err = NewBtreeWithInPostOrder(inOrder[1 + rootIndex:], postOrder[rootIndex:len (postOrder) - 1])
 	if err != nil {
 		return nil, err
 	}
@@ -188,7 +190,7 @@ func (tree *Btree) PreOrderMorris() (order []*Node) {
 				preNode.Right = current
 				current = current.Left
 			} else {
-				// second time visit, remove the link set in first time visit, then output the node
+				// second time visit, remove the link set in first time visit
 				preNode.Right = nil
 				current = current.Right
 			}
@@ -235,8 +237,18 @@ func (tree *Btree) InOrderNonRecursive() (order []*Node) {
 	return order
 }
 
+// In In-Order, the right node of current node's predecessor always is nil
+// In In-order traversal, start from root node
+// 1. if current node has left child then find its in-order predecessor and
+// make root as right child of it and move left of root. [ to find
+// predecessor, find the max right element in its left subtree ]
+// 2. if current node don't have left child , then print data and move right.
+//
+// The main thing which should be observe is that while performing step 1,
+// we'll reach a point where predecessor right child is itself current node,
+// this only happen when whole left child turned off and we start printing data from there.
+//
 // InOrderMorris return the IN order traversal based on threaded binary tree
-// in In-Order, the right node of current node's predecessor always is nil
 func (tree *Btree) InOrderMorris() (order []*Node) {
 
 	current := (*Node)(tree)
@@ -280,6 +292,73 @@ func (tree *Btree) PostOrder() (order []*Node) {
 
 	}
 	return order
+}
+
+// PostOrderMorris return the POST order traversal based on threaded binary tree
+func (tree *Btree) PostOrderMorris() (order []*Node) {
+
+	dummyRoot := &Node{}
+	// why link tree to the dummyRoot.Left ?
+	// Because if we assume there is no right child of root then print
+	// left child and then root become POST-order traversal
+	dummyRoot.Left = (*Node)(tree)
+
+	var preNode, first, middle, last *Node
+	current := dummyRoot
+
+	for (current != nil ) {
+		if current.Left == nil {
+			current = current.Right
+		} else {
+			// current has a left child, it also has a predecessor
+			// find the current's predecessor in IN-order
+			preNode = current.Left
+			for (preNode.Right != nil && preNode.Right != current) {
+				preNode = preNode.Right
+			}
+
+			// link the right child of predecessor to current
+			// when predecessor found for first time
+			if preNode.Right == nil {
+				preNode.Right = current
+				current = current.Left
+
+			} else {
+				// predecessor found second time
+				// reverse the right references in chain from preNode to current node
+				first = current
+				middle = current.Left
+				for (middle != current) {
+					last = middle.Right
+					middle.Right = first
+					first = middle
+					middle = last
+
+				}
+
+				// visit the nodes from preNode to current node
+				// again reverse this right references from
+				// preNode to current node
+				first = current
+				middle = preNode
+				for (middle != current) {
+					order = append(order, middle)
+					last = middle.Right
+					middle.Right = first
+					first = middle
+					middle = last
+				}
+
+				preNode.Right = nil
+				current = current.Right
+
+			}
+
+		}
+
+	}
+
+	return
 }
 
 // PostOrderNonRecursive return the post order traversal
