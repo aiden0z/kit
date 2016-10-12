@@ -277,3 +277,28 @@ func TestBtreePostOrderNonRecursiveV2(t *testing.T) {
 		}
 	}
 }
+
+func TestBtree_LevelOrder(t *testing.T) {
+
+	postOrder := []interface{}{'e', 'd', 'g', 'f', 'b', 'c', 'a'}
+	inOrder := []interface{}{'d', 'e', 'b', 'g', 'f', 'a', 'c'}
+	levelOrder := []interface{}{'a', 'b', 'c', 'd', 'f', 'e', 'g'}
+	btree, err := NewBtreeWithInPostOrder(inOrder, postOrder)
+
+	if err != nil {
+		t.Errorf("build btree failed %s", err)
+	}
+
+	result := btree.LevelOrder()
+
+	if len(result) == 0 {
+		t.Error("build Level-Order failed")
+	}
+
+	for i, v := range result {
+		if levelOrder[i].(rune) != v.Element.(rune) {
+			t.Error("build Level-Order failed")
+		}
+	}
+
+}

@@ -17,6 +17,7 @@ package tree
 import (
 	"errors"
 	"github.com/aiden0z/kit/stack"
+	"github.com/aiden0z/kit/queue"
 )
 
 // Btree describe a binary tree
@@ -121,7 +122,7 @@ err error) {
 	}
 	btree.Left = (*Node)(node)
 
-	node, err = NewBtreeWithInPostOrder(inOrder[1 + rootIndex:], postOrder[rootIndex:len (postOrder) - 1])
+	node, err = NewBtreeWithInPostOrder(inOrder[1 + rootIndex:], postOrder[rootIndex:len(postOrder) - 1])
 	if err != nil {
 		return nil, err
 	}
@@ -306,14 +307,14 @@ func (tree *Btree) PostOrderMorris() (order []*Node) {
 	var preNode, first, middle, last *Node
 	current := dummyRoot
 
-	for (current != nil ) {
+	for current != nil {
 		if current.Left == nil {
 			current = current.Right
 		} else {
 			// current has a left child, it also has a predecessor
 			// find the current's predecessor in IN-order
 			preNode = current.Left
-			for (preNode.Right != nil && preNode.Right != current) {
+			for preNode.Right != nil && preNode.Right != current {
 				preNode = preNode.Right
 			}
 
@@ -328,7 +329,7 @@ func (tree *Btree) PostOrderMorris() (order []*Node) {
 				// reverse the right references in chain from preNode to current node
 				first = current
 				middle = current.Left
-				for (middle != current) {
+				for middle != current {
 					last = middle.Right
 					middle.Right = first
 					first = middle
@@ -341,7 +342,7 @@ func (tree *Btree) PostOrderMorris() (order []*Node) {
 				// preNode to current node
 				first = current
 				middle = preNode
-				for (middle != current) {
+				for middle != current {
 					order = append(order, middle)
 					last = middle.Right
 					middle.Right = first
@@ -469,6 +470,38 @@ func (tree *Btree) PostOrderNonRecursiveV2() (order []*Node) {
 	for !s2.IsEmpty() {
 
 		order = append(order, s2.Pop().(*Node))
+	}
+
+	return
+}
+
+// LevelOrder return the level order traversal
+func (tree *Btree) LevelOrder() (order []*Node) {
+
+	if tree == nil {
+		return
+
+	}
+
+	queue := queue.NewQueue()
+
+	current := (*Node)(tree)
+
+	queue.Enqueue(current)
+
+	for !queue.IsEmpty() {
+
+		current = queue.Dequeue().(*Node)
+		order = append(order, current)
+
+		if current.Left != nil {
+
+			queue.Enqueue(current.Left)
+		}
+
+		if current.Right != nil {
+			queue.Enqueue(current.Right)
+		}
 	}
 
 	return
