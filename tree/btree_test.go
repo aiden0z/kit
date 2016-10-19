@@ -1,12 +1,13 @@
 package tree
 
 import (
+	"github.com/aiden0z/kit/base"
 	"testing"
 )
 
 func TestNewBtreeWithPreInOrder(t *testing.T) {
-	preOrder := []interface{}{7, 10, 4, 3, 1, 2, 8, 11}
-	inOrder := []interface{}{4, 10, 3, 1, 7, 11, 8, 2}
+	preOrder := base.IntComparableSlice([]int{7, 10, 4, 3, 1, 2, 8, 11})
+	inOrder := base.IntComparableSlice([]int{4, 10, 3, 1, 7, 11, 8, 2})
 
 	btree, err := NewBtreeWithInPreOrder(inOrder, preOrder)
 
@@ -19,7 +20,7 @@ func TestNewBtreeWithPreInOrder(t *testing.T) {
 		t.Error("build PRE-Order failed")
 	}
 	for i, v := range result {
-		if preOrder[i].(int) != v.Element.(int) {
+		if preOrder[i] != v.Element {
 			t.Error("build PRE-Order failed")
 		}
 	}
@@ -29,15 +30,15 @@ func TestNewBtreeWithPreInOrder(t *testing.T) {
 		t.Error("build IN-Order failed")
 	}
 	for i, v := range result {
-		if inOrder[i].(int) != v.Element.(int) {
+		if inOrder[i] != v.Element {
 			t.Error("build IN-Order failed")
 		}
 	}
 
-	preOrder = []interface{}{'a', 'b', 'd', 'e', 'f', 'g', 'c'}
-	inOrder = []interface{}{'d', 'e', 'b', 'g', 'f', 'a', 'c'}
+	preOrder1 := base.RuneComparableSlice([]rune{'a', 'b', 'd', 'e', 'f', 'g', 'c'})
+	inOrder1 := base.RuneComparableSlice([]rune{'d', 'e', 'b', 'g', 'f', 'a', 'c'})
 
-	btree, err = NewBtreeWithInPreOrder(inOrder, preOrder)
+	btree, err = NewBtreeWithInPreOrder(inOrder1, preOrder1)
 
 	if err != nil {
 		t.Errorf("build btree failed %s", err)
@@ -45,15 +46,15 @@ func TestNewBtreeWithPreInOrder(t *testing.T) {
 	result = btree.PreOrder()
 
 	for i, v := range result {
-		if preOrder[i].(rune) != v.Element.(rune) {
+		if preOrder1[i] != v.Element {
 			t.Error("build PRE-Order failed")
 		}
 	}
 }
 
 func TestNewBtreeWithPostInOrder(t *testing.T) {
-	postOrder := []interface{}{4, 1, 3, 10, 11, 8, 2, 7}
-	inOrder := []interface{}{4, 10, 3, 1, 7, 11, 8, 2}
+	inOrder := base.IntComparableSlice([]int{4, 10, 3, 1, 7, 11, 8, 2})
+	postOrder := base.IntComparableSlice([]int{4, 1, 3, 10, 11, 8, 2, 7})
 
 	btree, err := NewBtreeWithInPostOrder(inOrder, postOrder)
 
@@ -63,22 +64,22 @@ func TestNewBtreeWithPostInOrder(t *testing.T) {
 	result := btree.PostOrder()
 
 	for i, v := range result {
-		if postOrder[i].(int) != v.Element.(int) {
+		if postOrder[i] != v.Element {
 			t.Error("build POST-Order failed")
 		}
 	}
 
 	result = btree.InOrder()
 	for i, v := range result {
-		if inOrder[i].(int) != v.Element.(int) {
+		if inOrder[i] != v.Element {
 			t.Error("build IN-Order failed")
 		}
 	}
 
-	postOrder = []interface{}{'e', 'd', 'g', 'f', 'b', 'c', 'a'}
-	inOrder = []interface{}{'d', 'e', 'b', 'g', 'f', 'a', 'c'}
+	postOrder1 := base.RuneComparableSlice([]rune{'e', 'd', 'g', 'f', 'b', 'c', 'a'})
+	inOrder1 := base.RuneComparableSlice([]rune{'d', 'e', 'b', 'g', 'f', 'a', 'c'})
 
-	btree, err = NewBtreeWithInPostOrder(inOrder, postOrder)
+	btree, err = NewBtreeWithInPostOrder(inOrder1, postOrder1)
 
 	if err != nil {
 		t.Errorf("build btree failed %s", err)
@@ -86,15 +87,15 @@ func TestNewBtreeWithPostInOrder(t *testing.T) {
 	result = btree.PostOrder()
 
 	for i, v := range result {
-		if postOrder[i].(rune) != v.Element.(rune) {
+		if postOrder1[i] != v.Element {
 			t.Error("build POST-Order failed")
 		}
 	}
 }
 
 func TestBtreePreOrderNonRecursive(t *testing.T) {
-	preOrder := []interface{}{7, 10, 4, 3, 1, 2, 8, 11}
-	inOrder := []interface{}{4, 10, 3, 1, 7, 11, 8, 2}
+	preOrder := base.IntComparableSlice([]int{7, 10, 4, 3, 1, 2, 8, 11})
+	inOrder := base.IntComparableSlice([]int{4, 10, 3, 1, 7, 11, 8, 2})
 
 	btree, err := NewBtreeWithInPreOrder(inOrder, preOrder)
 
@@ -109,15 +110,15 @@ func TestBtreePreOrderNonRecursive(t *testing.T) {
 	}
 
 	for i, v := range result {
-		if preOrder[i].(int) != v.Element.(int) {
+		if preOrder[i] != v.Element {
 			t.Error("build PRE-Order failed")
 		}
 	}
 }
 
 func TestBtreePreOrderMorris(t *testing.T) {
-	preOrder := []interface{}{7, 10, 4, 3, 1, 2, 8, 11}
-	inOrder := []interface{}{4, 10, 3, 1, 7, 11, 8, 2}
+	preOrder := base.IntComparableSlice([]int{7, 10, 4, 3, 1, 2, 8, 11})
+	inOrder := base.IntComparableSlice([]int{4, 10, 3, 1, 7, 11, 8, 2})
 
 	btree, err := NewBtreeWithInPreOrder(inOrder, preOrder)
 
@@ -132,15 +133,15 @@ func TestBtreePreOrderMorris(t *testing.T) {
 	}
 
 	for i, v := range result {
-		if preOrder[i].(int) != v.Element.(int) {
+		if preOrder[i] != v.Element {
 			t.Error("build PRE-Order failed")
 		}
 	}
 }
 
 func TestBtreeInOrderNonRecursive(t *testing.T) {
-	preOrder := []interface{}{7, 10, 4, 3, 1, 2, 8, 11}
-	inOrder := []interface{}{4, 10, 3, 1, 7, 11, 8, 2}
+	preOrder := base.IntComparableSlice([]int{7, 10, 4, 3, 1, 2, 8, 11})
+	inOrder := base.IntComparableSlice([]int{4, 10, 3, 1, 7, 11, 8, 2})
 
 	btree, err := NewBtreeWithInPreOrder(inOrder, preOrder)
 
@@ -155,15 +156,15 @@ func TestBtreeInOrderNonRecursive(t *testing.T) {
 	}
 
 	for i, v := range result {
-		if inOrder[i].(int) != v.Element.(int) {
+		if inOrder[i] != v.Element {
 			t.Error("build IN-Order failed")
 		}
 	}
 }
 
 func TestBtreeInOrderMorris(t *testing.T) {
-	preOrder := []interface{}{7, 10, 4, 3, 1, 2, 8, 11}
-	inOrder := []interface{}{4, 10, 3, 1, 7, 11, 8, 2}
+	preOrder := base.IntComparableSlice([]int{7, 10, 4, 3, 1, 2, 8, 11})
+	inOrder := base.IntComparableSlice([]int{4, 10, 3, 1, 7, 11, 8, 2})
 
 	btree, err := NewBtreeWithInPreOrder(inOrder, preOrder)
 
@@ -178,15 +179,15 @@ func TestBtreeInOrderMorris(t *testing.T) {
 	}
 
 	for i, v := range result {
-		if inOrder[i].(int) != v.Element.(int) {
+		if inOrder[i] != v.Element {
 			t.Error("build IN-Order failed")
 		}
 	}
 }
 
 func TestBtreePostOrderNonRecursive(t *testing.T) {
-	postOrder := []interface{}{'e', 'd', 'g', 'f', 'b', 'c', 'a'}
-	inOrder := []interface{}{'d', 'e', 'b', 'g', 'f', 'a', 'c'}
+	postOrder := base.RuneComparableSlice([]rune{'e', 'd', 'g', 'f', 'b', 'c', 'a'})
+	inOrder := base.RuneComparableSlice([]rune{'d', 'e', 'b', 'g', 'f', 'a', 'c'})
 
 	btree, err := NewBtreeWithInPostOrder(inOrder, postOrder)
 
@@ -201,7 +202,7 @@ func TestBtreePostOrderNonRecursive(t *testing.T) {
 	}
 
 	for i, v := range result {
-		if postOrder[i].(rune) != v.Element.(rune) {
+		if postOrder[i] != v.Element {
 			t.Error("build POST-Order failed")
 		}
 	}
@@ -209,8 +210,8 @@ func TestBtreePostOrderNonRecursive(t *testing.T) {
 
 func TestBtreePostOrderMorris(t *testing.T) {
 
-	postOrder := []interface{}{'e', 'd', 'g', 'f', 'b', 'c', 'a'}
-	inOrder := []interface{}{'d', 'e', 'b', 'g', 'f', 'a', 'c'}
+	postOrder := base.RuneComparableSlice([]rune{'e', 'd', 'g', 'f', 'b', 'c', 'a'})
+	inOrder := base.RuneComparableSlice([]rune{'d', 'e', 'b', 'g', 'f', 'a', 'c'})
 
 	btree, err := NewBtreeWithInPostOrder(inOrder, postOrder)
 
@@ -225,7 +226,7 @@ func TestBtreePostOrderMorris(t *testing.T) {
 	}
 
 	for i, v := range result {
-		if postOrder[i].(rune) != v.Element.(rune) {
+		if postOrder[i] != v.Element {
 			t.Error("build POST-Order failed")
 		}
 	}
@@ -233,8 +234,8 @@ func TestBtreePostOrderMorris(t *testing.T) {
 }
 
 func TestBtreePostOrderNonRecursiveV1(t *testing.T) {
-	postOrder := []interface{}{'e', 'd', 'g', 'f', 'b', 'c', 'a'}
-	inOrder := []interface{}{'d', 'e', 'b', 'g', 'f', 'a', 'c'}
+	postOrder := base.RuneComparableSlice([]rune{'e', 'd', 'g', 'f', 'b', 'c', 'a'})
+	inOrder := base.RuneComparableSlice([]rune{'d', 'e', 'b', 'g', 'f', 'a', 'c'})
 
 	btree, err := NewBtreeWithInPostOrder(inOrder, postOrder)
 
@@ -249,15 +250,15 @@ func TestBtreePostOrderNonRecursiveV1(t *testing.T) {
 	}
 
 	for i, v := range result {
-		if postOrder[i].(rune) != v.Element.(rune) {
+		if postOrder[i] != v.Element {
 			t.Error("build POST-Order failed")
 		}
 	}
 }
 
 func TestBtreePostOrderNonRecursiveV2(t *testing.T) {
-	postOrder := []interface{}{'e', 'd', 'g', 'f', 'b', 'c', 'a'}
-	inOrder := []interface{}{'d', 'e', 'b', 'g', 'f', 'a', 'c'}
+	postOrder := base.RuneComparableSlice([]rune{'e', 'd', 'g', 'f', 'b', 'c', 'a'})
+	inOrder := base.RuneComparableSlice([]rune{'d', 'e', 'b', 'g', 'f', 'a', 'c'})
 
 	btree, err := NewBtreeWithInPostOrder(inOrder, postOrder)
 
@@ -272,7 +273,7 @@ func TestBtreePostOrderNonRecursiveV2(t *testing.T) {
 	}
 
 	for i, v := range result {
-		if postOrder[i].(rune) != v.Element.(rune) {
+		if postOrder[i] != v.Element {
 			t.Error("build POST-Order failed")
 		}
 	}
@@ -280,9 +281,9 @@ func TestBtreePostOrderNonRecursiveV2(t *testing.T) {
 
 func TestBtree_LevelOrder(t *testing.T) {
 
-	postOrder := []interface{}{'e', 'd', 'g', 'f', 'b', 'c', 'a'}
-	inOrder := []interface{}{'d', 'e', 'b', 'g', 'f', 'a', 'c'}
-	levelOrder := []interface{}{'a', 'b', 'c', 'd', 'f', 'e', 'g'}
+	postOrder := base.RuneComparableSlice([]rune{'e', 'd', 'g', 'f', 'b', 'c', 'a'})
+	inOrder := base.RuneComparableSlice([]rune{'d', 'e', 'b', 'g', 'f', 'a', 'c'})
+	levelOrder := base.RuneComparableSlice([]rune{'a', 'b', 'c', 'd', 'f', 'e', 'g'})
 	btree, err := NewBtreeWithInPostOrder(inOrder, postOrder)
 
 	if err != nil {
@@ -296,7 +297,7 @@ func TestBtree_LevelOrder(t *testing.T) {
 	}
 
 	for i, v := range result {
-		if levelOrder[i].(rune) != v.Element.(rune) {
+		if levelOrder[i] != v.Element {
 			t.Error("build Level-Order failed")
 		}
 	}

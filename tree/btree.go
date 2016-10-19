@@ -18,13 +18,14 @@ import (
 	"errors"
 	"github.com/aiden0z/kit/stack"
 	"github.com/aiden0z/kit/queue"
+	"github.com/aiden0z/kit/base"
 )
 
 // Btree describe a binary tree
 type Btree Node
 
 // indexInSlice  find the k's index in slice
-func indexInSlice(k interface{}, slice []interface{}) int {
+func indexInSlice(k base.Comparable, slice []base.Comparable) int {
 	for i, v := range slice {
 		if v == k {
 			return i
@@ -34,7 +35,7 @@ func indexInSlice(k interface{}, slice []interface{}) int {
 }
 
 // NewBtreeWithInPreOrder create a binary tree based on PRE and IN order
-func NewBtreeWithInPreOrder(inOrder, preOrder []interface{}) (btree *Btree,
+func NewBtreeWithInPreOrder(inOrder, preOrder []base.Comparable) (btree *Btree,
 err error) {
 
 	defer func() {
@@ -83,7 +84,7 @@ err error) {
 }
 
 // NewBtreeWithInPostOrder create a binary tree based on POST and IN order
-func NewBtreeWithInPostOrder(inOrder, postOrder []interface{}) (btree *Btree,
+func NewBtreeWithInPostOrder(inOrder, postOrder []base.Comparable) (btree *Btree,
 err error) {
 
 	defer func() {
