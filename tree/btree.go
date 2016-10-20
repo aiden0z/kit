@@ -1,6 +1,6 @@
 //            Binary tree
 //
-//                      a
+//                      7
 //                    /   \
 //                  b       c
 //               /     \
@@ -8,9 +8,9 @@
 //               \    /
 //                e  g
 //
-// PRE-Order:  a, b, d, e, f, g, c
-// IN-Order:   d, e, b, g, f, a, c
-// POST-Order: e, d, g, f, b, c, a
+// PRE-Order:  7, 10, 4, 3, 1, 2, 8, 11
+// IN-Order:   4, 10, 3, 1, 7, 11, 8, 2
+// POST-Order: 4, 1, 3, 10, 11, 8, 2, 7
 
 package tree
 
@@ -506,4 +506,109 @@ func (tree *Btree) LevelOrder() (order []*Node) {
 	}
 
 	return
+}
+
+// Find the specified node
+func (tree *Btree) Find(o base.Comparable) (node *Node) {
+	if tree == nil {
+		return
+	}
+
+	current := (*Node)(tree)
+
+	result := current.Element.CompareTo(o)
+
+	if result < 0 {
+
+		return (*Btree)(current.Right).Find(o)
+	} else if result > 0 {
+		return (*Btree)(current.Left).Find(o)
+	} else {
+		node = current
+	}
+
+	return
+}
+// Find the specified node
+func (tree *Btree) FindNonRecursive(o base.Comparable) (node *Node) {
+	if tree == nil {
+		return
+	}
+
+	node = (*Node)(tree)
+
+	var result int
+
+	for node != nil {
+		result = node.Element.CompareTo(o)
+
+		if result == 0 {
+			return
+		} else if result > 0 {
+			node = node.Left
+		} else {
+			node = node.Right
+		}
+	}
+
+	return
+}
+
+// FindMin return mini node
+func (tree *Btree) FindMin() *Node {
+	if tree == nil {
+		return nil
+	}
+
+	current := (*Node)(tree)
+
+	if current.Left == nil {
+		return current
+	}
+
+	return (*Btree)(current).FindMin()
+}
+
+// FindMinNonRecursive return mini node
+func (tree *Btree) FindMinNonRecursive() *Node {
+	if tree == nil {
+		return nil
+	}
+
+	current := (*Node)(tree)
+	for current.Left != nil {
+		current = current.Left
+	}
+	return current
+}
+
+
+// FindMax return max node
+func (tree *Btree) FindMax() *Node {
+
+	if tree == nil {
+		return nil
+	}
+
+	current := (*Node)(tree)
+
+	if current.Right == nil {
+		return current
+	}
+
+	return (*Btree)(current).FindMin()
+}
+
+// FindMaxNonRecursive return mini node
+func (tree *Btree) FindMaxNonRecursive() *Node {
+	if tree == nil {
+		return nil
+	}
+
+	current := (*Node)(tree)
+
+	for current.Right != nil {
+		current = current.Right
+	}
+	return current
 }

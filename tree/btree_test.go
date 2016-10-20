@@ -6,8 +6,8 @@ import (
 )
 
 func TestNewBtreeWithPreInOrder(t *testing.T) {
-	preOrder := base.IntComparableSlice([]int{7, 10, 4, 3, 1, 2, 8, 11})
-	inOrder := base.IntComparableSlice([]int{4, 10, 3, 1, 7, 11, 8, 2})
+	preOrder := base.NewIntComparableSlice([]int{7, 10, 4, 3, 1, 2, 8, 11})
+	inOrder := base.NewIntComparableSlice([]int{4, 10, 3, 1, 7, 11, 8, 2})
 
 	btree, err := NewBtreeWithInPreOrder(inOrder, preOrder)
 
@@ -35,8 +35,8 @@ func TestNewBtreeWithPreInOrder(t *testing.T) {
 		}
 	}
 
-	preOrder1 := base.RuneComparableSlice([]rune{'a', 'b', 'd', 'e', 'f', 'g', 'c'})
-	inOrder1 := base.RuneComparableSlice([]rune{'d', 'e', 'b', 'g', 'f', 'a', 'c'})
+	preOrder1 := base.NewRuneComparableSlice([]rune{'a', 'b', 'd', 'e', 'f', 'g', 'c'})
+	inOrder1 := base.NewRuneComparableSlice([]rune{'d', 'e', 'b', 'g', 'f', 'a', 'c'})
 
 	btree, err = NewBtreeWithInPreOrder(inOrder1, preOrder1)
 
@@ -53,8 +53,8 @@ func TestNewBtreeWithPreInOrder(t *testing.T) {
 }
 
 func TestNewBtreeWithPostInOrder(t *testing.T) {
-	inOrder := base.IntComparableSlice([]int{4, 10, 3, 1, 7, 11, 8, 2})
-	postOrder := base.IntComparableSlice([]int{4, 1, 3, 10, 11, 8, 2, 7})
+	inOrder := base.NewIntComparableSlice([]int{4, 10, 3, 1, 7, 11, 8, 2})
+	postOrder := base.NewIntComparableSlice([]int{4, 1, 3, 10, 11, 8, 2, 7})
 
 	btree, err := NewBtreeWithInPostOrder(inOrder, postOrder)
 
@@ -76,8 +76,8 @@ func TestNewBtreeWithPostInOrder(t *testing.T) {
 		}
 	}
 
-	postOrder1 := base.RuneComparableSlice([]rune{'e', 'd', 'g', 'f', 'b', 'c', 'a'})
-	inOrder1 := base.RuneComparableSlice([]rune{'d', 'e', 'b', 'g', 'f', 'a', 'c'})
+	postOrder1 := base.NewRuneComparableSlice([]rune{'e', 'd', 'g', 'f', 'b', 'c', 'a'})
+	inOrder1 := base.NewRuneComparableSlice([]rune{'d', 'e', 'b', 'g', 'f', 'a', 'c'})
 
 	btree, err = NewBtreeWithInPostOrder(inOrder1, postOrder1)
 
@@ -94,8 +94,8 @@ func TestNewBtreeWithPostInOrder(t *testing.T) {
 }
 
 func TestBtreePreOrderNonRecursive(t *testing.T) {
-	preOrder := base.IntComparableSlice([]int{7, 10, 4, 3, 1, 2, 8, 11})
-	inOrder := base.IntComparableSlice([]int{4, 10, 3, 1, 7, 11, 8, 2})
+	preOrder := base.NewIntComparableSlice([]int{7, 10, 4, 3, 1, 2, 8, 11})
+	inOrder := base.NewIntComparableSlice([]int{4, 10, 3, 1, 7, 11, 8, 2})
 
 	btree, err := NewBtreeWithInPreOrder(inOrder, preOrder)
 
@@ -117,8 +117,8 @@ func TestBtreePreOrderNonRecursive(t *testing.T) {
 }
 
 func TestBtreePreOrderMorris(t *testing.T) {
-	preOrder := base.IntComparableSlice([]int{7, 10, 4, 3, 1, 2, 8, 11})
-	inOrder := base.IntComparableSlice([]int{4, 10, 3, 1, 7, 11, 8, 2})
+	preOrder := base.NewIntComparableSlice([]int{7, 10, 4, 3, 1, 2, 8, 11})
+	inOrder := base.NewIntComparableSlice([]int{4, 10, 3, 1, 7, 11, 8, 2})
 
 	btree, err := NewBtreeWithInPreOrder(inOrder, preOrder)
 
@@ -140,8 +140,8 @@ func TestBtreePreOrderMorris(t *testing.T) {
 }
 
 func TestBtreeInOrderNonRecursive(t *testing.T) {
-	preOrder := base.IntComparableSlice([]int{7, 10, 4, 3, 1, 2, 8, 11})
-	inOrder := base.IntComparableSlice([]int{4, 10, 3, 1, 7, 11, 8, 2})
+	preOrder := base.NewIntComparableSlice([]int{7, 10, 4, 3, 1, 2, 8, 11})
+	inOrder := base.NewIntComparableSlice([]int{4, 10, 3, 1, 7, 11, 8, 2})
 
 	btree, err := NewBtreeWithInPreOrder(inOrder, preOrder)
 
@@ -163,8 +163,8 @@ func TestBtreeInOrderNonRecursive(t *testing.T) {
 }
 
 func TestBtreeInOrderMorris(t *testing.T) {
-	preOrder := base.IntComparableSlice([]int{7, 10, 4, 3, 1, 2, 8, 11})
-	inOrder := base.IntComparableSlice([]int{4, 10, 3, 1, 7, 11, 8, 2})
+	preOrder := base.NewIntComparableSlice([]int{7, 10, 4, 3, 1, 2, 8, 11})
+	inOrder := base.NewIntComparableSlice([]int{4, 10, 3, 1, 7, 11, 8, 2})
 
 	btree, err := NewBtreeWithInPreOrder(inOrder, preOrder)
 
@@ -186,8 +186,8 @@ func TestBtreeInOrderMorris(t *testing.T) {
 }
 
 func TestBtreePostOrderNonRecursive(t *testing.T) {
-	postOrder := base.RuneComparableSlice([]rune{'e', 'd', 'g', 'f', 'b', 'c', 'a'})
-	inOrder := base.RuneComparableSlice([]rune{'d', 'e', 'b', 'g', 'f', 'a', 'c'})
+	postOrder := base.NewRuneComparableSlice([]rune{'e', 'd', 'g', 'f', 'b', 'c', 'a'})
+	inOrder := base.NewRuneComparableSlice([]rune{'d', 'e', 'b', 'g', 'f', 'a', 'c'})
 
 	btree, err := NewBtreeWithInPostOrder(inOrder, postOrder)
 
@@ -210,8 +210,8 @@ func TestBtreePostOrderNonRecursive(t *testing.T) {
 
 func TestBtreePostOrderMorris(t *testing.T) {
 
-	postOrder := base.RuneComparableSlice([]rune{'e', 'd', 'g', 'f', 'b', 'c', 'a'})
-	inOrder := base.RuneComparableSlice([]rune{'d', 'e', 'b', 'g', 'f', 'a', 'c'})
+	postOrder := base.NewRuneComparableSlice([]rune{'e', 'd', 'g', 'f', 'b', 'c', 'a'})
+	inOrder := base.NewRuneComparableSlice([]rune{'d', 'e', 'b', 'g', 'f', 'a', 'c'})
 
 	btree, err := NewBtreeWithInPostOrder(inOrder, postOrder)
 
@@ -234,8 +234,8 @@ func TestBtreePostOrderMorris(t *testing.T) {
 }
 
 func TestBtreePostOrderNonRecursiveV1(t *testing.T) {
-	postOrder := base.RuneComparableSlice([]rune{'e', 'd', 'g', 'f', 'b', 'c', 'a'})
-	inOrder := base.RuneComparableSlice([]rune{'d', 'e', 'b', 'g', 'f', 'a', 'c'})
+	postOrder := base.NewRuneComparableSlice([]rune{'e', 'd', 'g', 'f', 'b', 'c', 'a'})
+	inOrder := base.NewRuneComparableSlice([]rune{'d', 'e', 'b', 'g', 'f', 'a', 'c'})
 
 	btree, err := NewBtreeWithInPostOrder(inOrder, postOrder)
 
@@ -257,8 +257,8 @@ func TestBtreePostOrderNonRecursiveV1(t *testing.T) {
 }
 
 func TestBtreePostOrderNonRecursiveV2(t *testing.T) {
-	postOrder := base.RuneComparableSlice([]rune{'e', 'd', 'g', 'f', 'b', 'c', 'a'})
-	inOrder := base.RuneComparableSlice([]rune{'d', 'e', 'b', 'g', 'f', 'a', 'c'})
+	postOrder := base.NewRuneComparableSlice([]rune{'e', 'd', 'g', 'f', 'b', 'c', 'a'})
+	inOrder := base.NewRuneComparableSlice([]rune{'d', 'e', 'b', 'g', 'f', 'a', 'c'})
 
 	btree, err := NewBtreeWithInPostOrder(inOrder, postOrder)
 
@@ -281,9 +281,9 @@ func TestBtreePostOrderNonRecursiveV2(t *testing.T) {
 
 func TestBtree_LevelOrder(t *testing.T) {
 
-	postOrder := base.RuneComparableSlice([]rune{'e', 'd', 'g', 'f', 'b', 'c', 'a'})
-	inOrder := base.RuneComparableSlice([]rune{'d', 'e', 'b', 'g', 'f', 'a', 'c'})
-	levelOrder := base.RuneComparableSlice([]rune{'a', 'b', 'c', 'd', 'f', 'e', 'g'})
+	postOrder := base.NewRuneComparableSlice([]rune{'e', 'd', 'g', 'f', 'b', 'c', 'a'})
+	inOrder := base.NewRuneComparableSlice([]rune{'d', 'e', 'b', 'g', 'f', 'a', 'c'})
+	levelOrder := base.NewRuneComparableSlice([]rune{'a', 'b', 'c', 'd', 'f', 'e', 'g'})
 	btree, err := NewBtreeWithInPostOrder(inOrder, postOrder)
 
 	if err != nil {

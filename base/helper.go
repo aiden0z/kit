@@ -18,7 +18,7 @@ func (i Int) CompareTo(o Comparable) int {
 	}
 }
 
-func IntComparableSlice(slice []int) (s []Comparable) {
+func NewIntComparableSlice(slice []int) (s []Comparable) {
 	for _, v := range slice {
 		s = append(s, Int(v))
 	}
@@ -42,7 +42,7 @@ func (r Rune) CompareTo(o Comparable) int {
 	}
 }
 
-func RuneComparableSlice(slice []rune) (r []Comparable) {
+func NewRuneComparableSlice(slice []rune) (r []Comparable) {
 	for _, v := range slice {
 		r = append(r, Rune(v))
 	}

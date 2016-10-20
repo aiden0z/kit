@@ -7,7 +7,7 @@ import (
 func TestIntSlice(t *testing.T) {
 
 	ints := []int{7, 10, 4, 3, 1, 2, 8, 11}
-	order := IntComparableSlice(ints)
+	order := NewIntComparableSlice(ints)
 
 	for i, v := range ints {
 		if order[i].CompareTo(Int(v)) != 0 {
@@ -40,7 +40,7 @@ func TestInt_CompareTo(t *testing.T) {
 
 func TestRuneSlice(t *testing.T) {
 	runes := []int{'a', 'b', 'c'}
-	order := IntComparableSlice(runes)
+	order := NewIntComparableSlice(runes)
 
 	for i, v := range runes{
 		if order[i].CompareTo(Int(v)) != 0 {
