@@ -1,16 +1,18 @@
-//            Binary tree
+//        Binary Search Tree
 //
-//                      7
-//                    /   \
-//                  b       c
-//               /     \
-//             d        f
-//               \    /
-//                e  g
+//                 6
+//              /    \
+//            /        \
+//           3          9
+//         /   \      /   \
+//        2     5    8     10
+//      /                     \
+//     1                       11
 //
-// PRE-Order:  7, 10, 4, 3, 1, 2, 8, 11
-// IN-Order:   4, 10, 3, 1, 7, 11, 8, 2
-// POST-Order: 4, 1, 3, 10, 11, 8, 2, 7
+
+// PRE-Order:   6, 3, 2, 1, 5, 9, 8, 10, 11
+// IN-Order:    1, 2, 3, 5, 6, 8, 9, 10, 11
+// POST-Order:  1, 2, 5, 3, 8, 11, 10, 9, 6
 
 package tree
 
@@ -243,7 +245,7 @@ func (tree *Btree) InOrderNonRecursive() (order []*Node) {
 // In In-order traversal, start from root node
 // 1. if current node has left child then find its in-order predecessor and
 // make root as right child of it and move left of root. [ to find
-// predecessor, find the max right element in its left subtree ]
+// predecessor, find the maximum right element in its left subtree ]
 // 2. if current node don't have left child , then print data and move right.
 //
 // The main thing which should be observe is that while performing step 1,
@@ -554,7 +556,7 @@ func (tree *Btree) FindNonRecursive(o base.Comparable) (node *Node) {
 	return
 }
 
-// FindMin return mini node
+// FindMin return minimum node
 func (tree *Btree) FindMin() *Node {
 	if tree == nil {
 		return nil
@@ -566,10 +568,10 @@ func (tree *Btree) FindMin() *Node {
 		return current
 	}
 
-	return (*Btree)(current).FindMin()
+	return (*Btree)(current.Left).FindMin()
 }
 
-// FindMinNonRecursive return mini node
+// FindMinNonRecursive return minimum node
 func (tree *Btree) FindMinNonRecursive() *Node {
 	if tree == nil {
 		return nil
@@ -583,7 +585,7 @@ func (tree *Btree) FindMinNonRecursive() *Node {
 }
 
 
-// FindMax return max node
+// FindMax return maximum node
 func (tree *Btree) FindMax() *Node {
 
 	if tree == nil {
@@ -596,10 +598,10 @@ func (tree *Btree) FindMax() *Node {
 		return current
 	}
 
-	return (*Btree)(current).FindMin()
+	return (*Btree)(current.Right).FindMax()
 }
 
-// FindMaxNonRecursive return mini node
+// FindMaxNonRecursive return maximum node
 func (tree *Btree) FindMaxNonRecursive() *Node {
 	if tree == nil {
 		return nil
@@ -611,4 +613,58 @@ func (tree *Btree) FindMaxNonRecursive() *Node {
 		current = current.Right
 	}
 	return current
+}
+
+// Insert a value and return a inserted tree
+func (tree *Btree) Insert(o base.Comparable) (aTree *Btree) {
+
+	aTree = tree
+
+
+	if aTree == nil {
+		aTree = (*Btree)(&Node{Element: o})
+	} else if (o.CompareTo(tree.Element)) < 0 {
+		aTree.Left = (*Node)((*Btree)(aTree.Left).Insert(o))
+
+	} else if (o.CompareTo(tree.Element)) > 0 {
+		aTree.Right = (*Node)((*Btree)(aTree.Right).Insert(o))
+	}
+
+	return aTree
+}
+
+// InsertNonRecursive insert a value non-recursive
+func (tree *Btree) InsertNonRecursive(o base.Comparable) (aTree *Btree) {
+
+	aTree = tree
+
+	if aTree == nil {
+		aTree = (*Btree)(&Node{Element: o})
+		return
+	}
+
+	current := (*Node)(aTree)
+
+	for {
+		if o.CompareTo(current.Element) < 0 {
+			if current.Left == nil {
+				current.Left = &Node{Element: o}
+				return
+			} else {
+				current = current.Left
+			}
+
+		} else if o.CompareTo(current.Element) > 0 {
+			if current.Right == nil {
+				current.Right = &Node{Element: o}
+				return
+			} else {
+				current = current.Right
+			}
+
+		} else {
+			return
+		}
+	}
+	return
 }
