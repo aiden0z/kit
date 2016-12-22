@@ -1,5 +1,7 @@
 package base
 
+import "fmt"
+
 type Int int
 
 func (i Int) CompareTo(o Comparable) int {
@@ -16,6 +18,10 @@ func (i Int) CompareTo(o Comparable) int {
 	} else {
 		return -1
 	}
+}
+
+func (i Int) String() string {
+	return fmt.Sprintf("%d", i)
 }
 
 func NewIntComparableSlice(slice []int) (s []Comparable) {
@@ -40,6 +46,10 @@ func (r Rune) CompareTo(o Comparable) int {
 	} else {
 		return -1
 	}
+}
+
+func (r Rune) String() string {
+	return string(r)
 }
 
 func NewRuneComparableSlice(slice []rune) (r []Comparable) {

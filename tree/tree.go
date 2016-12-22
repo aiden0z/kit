@@ -7,8 +7,9 @@ import (
 
 
 // Node describe the tree node
-type Node struct {
+type Btree struct {
 	Element base.Comparable
-	Left    *Node
-	Right   *Node
+	Left    *Btree
+	Right   *Btree
 }
+

@@ -1,44 +1,16 @@
-//        Binary Search Tree
-//
-//                 6
-//              /    \
-//            /        \
-//           3          9
-//         /   \      /   \
-//        2     5    8     10
-//      /                     \
-//     1                       11
-//
-
-// PRE-Order:   6, 3, 2, 1, 5, 9, 8, 10, 11
-// IN-Order:    1, 2, 3, 5, 6, 8, 9, 10, 11
-// POST-Order:  1, 2, 5, 3, 8, 11, 10, 9, 6
-
 package tree
 
 import (
+	"bytes"
 	"errors"
-	"github.com/aiden0z/kit/stack"
-	"github.com/aiden0z/kit/queue"
+
 	"github.com/aiden0z/kit/base"
+	"github.com/aiden0z/kit/queue"
+	"github.com/aiden0z/kit/stack"
 )
 
-// Btree describe a binary tree
-type Btree Node
-
-// indexInSlice  find the k's index in slice
-func indexInSlice(k base.Comparable, slice []base.Comparable) int {
-	for i, v := range slice {
-		if v == k {
-			return i
-		}
-	}
-	return -1
-}
-
 // NewBtreeWithInPreOrder create a binary tree based on PRE and IN order
-func NewBtreeWithInPreOrder(inOrder, preOrder []base.Comparable) (btree *Btree,
-err error) {
+func NewBtreeWithInPreOrder(inOrder, preOrder []base.Comparable) (btree *Btree, err error) {
 
 	defer func() {
 		if r := recover(); r != nil {
@@ -70,24 +42,24 @@ err error) {
 		Element: preOrder[0],
 	}
 
-	node, err := NewBtreeWithInPreOrder(inOrder[:rootIndex], preOrder[1:rootIndex + 1])
+	node, err := NewBtreeWithInPreOrder(inOrder[:rootIndex], preOrder[1:rootIndex+1])
 	if err != nil {
 		return nil, err
 	}
-	btree.Left = (*Node)(node)
+	btree.Left = node
 
-	node, err = NewBtreeWithInPreOrder(inOrder[1 + rootIndex:], preOrder[1 + rootIndex:])
+	node, err = NewBtreeWithInPreOrder(inOrder[1+rootIndex:], preOrder[1+rootIndex:])
 	if err != nil {
 		return nil, err
 	}
 
-	btree.Right = (*Node)(node)
+	btree.Right = node
 	return btree, nil
 }
 
 // NewBtreeWithInPostOrder create a binary tree based on POST and IN order
 func NewBtreeWithInPostOrder(inOrder, postOrder []base.Comparable) (btree *Btree,
-err error) {
+	err error) {
 
 	defer func() {
 		if r := recover(); r != nil {
@@ -113,45 +85,45 @@ err error) {
 		return
 	}
 
-	rootIndex := indexInSlice(postOrder[len(postOrder) - 1], inOrder)
+	rootIndex := indexInSlice(postOrder[len(postOrder)-1], inOrder)
 
 	btree = &Btree{
-		Element: postOrder[len(postOrder) - 1],
+		Element: postOrder[len(postOrder)-1],
 	}
 
 	node, err := NewBtreeWithInPostOrder(inOrder[:rootIndex], postOrder[:rootIndex])
 	if err != nil {
 		return nil, err
 	}
-	btree.Left = (*Node)(node)
+	btree.Left = node
 
-	node, err = NewBtreeWithInPostOrder(inOrder[1 + rootIndex:], postOrder[rootIndex:len(postOrder) - 1])
+	node, err = NewBtreeWithInPostOrder(inOrder[1+rootIndex:], postOrder[rootIndex:len(postOrder)-1])
 	if err != nil {
 		return nil, err
 	}
 
-	btree.Right = (*Node)(node)
+	btree.Right = node
 	return btree, nil
 
 }
 
 // PreOrder return the PRE order traversal
-func (tree *Btree) PreOrder() (order []*Node) {
+func (tree *Btree) PreOrder() (order []*Btree) {
 	if tree != nil {
-		order = append(order, (*Node)(tree))
-		order = append(order, (*Btree)(tree.Left).PreOrder()...)
-		order = append(order, (*Btree)(tree.Right).PreOrder()...)
+		order = append(order, tree)
+		order = append(order, tree.Left.PreOrder()...)
+		order = append(order, tree.Right.PreOrder()...)
 	}
 	return order
 }
 
 // PreOrderNonRecursive return the PRE order traversal
-func (tree *Btree) PreOrderNonRecursive() (order []*Node) {
+func (tree *Btree) PreOrderNonRecursive() (order []*Btree) {
 	if tree == nil {
 		return
 	}
 
-	node := (*Node)(tree)
+	node := tree
 	s := stack.NewStack(10)
 
 	for node != nil || !s.IsEmpty() {
@@ -162,7 +134,7 @@ func (tree *Btree) PreOrderNonRecursive() (order []*Node) {
 		}
 
 		if !s.IsEmpty() {
-			node = s.Pop().(*Node)
+			node = s.Pop().(*Btree)
 			node = node.Right
 		}
 	}
@@ -172,10 +144,10 @@ func (tree *Btree) PreOrderNonRecursive() (order []*Node) {
 
 // PreOrderMorris return the IN order traversal based on threaded binary tree
 // In In-Order, the right node of current node's predecessor always is nil
-func (tree *Btree) PreOrderMorris() (order []*Node) {
+func (tree *Btree) PreOrderMorris() (order []*Btree) {
 
-	current := (*Node)(tree)
-	var preNode *Node
+	current := tree
+	var preNode *Btree
 
 	for current != nil {
 		if current.Left == nil {
@@ -206,23 +178,23 @@ func (tree *Btree) PreOrderMorris() (order []*Node) {
 }
 
 // InOrder return the IN order traversal
-func (tree *Btree) InOrder() (order []*Node) {
+func (tree *Btree) InOrder() (order []*Btree) {
 	if tree != nil {
-		order = append(order, (*Btree)(tree.Left).InOrder()...)
-		order = append(order, (*Node)(tree))
-		order = append(order, (*Btree)(tree.Right).InOrder()...)
+		order = append(order, tree.Left.InOrder()...)
+		order = append(order, tree)
+		order = append(order, tree.Right.InOrder()...)
 
 	}
 	return order
 }
 
 // InOrderNonRecursive return the IN order traversal
-func (tree *Btree) InOrderNonRecursive() (order []*Node) {
+func (tree *Btree) InOrderNonRecursive() (order []*Btree) {
 	if tree == nil {
 		return
 	}
 
-	node := (*Node)(tree)
+	node := tree
 	s := stack.NewStack(10)
 
 	for node != nil || !s.IsEmpty() {
@@ -232,7 +204,7 @@ func (tree *Btree) InOrderNonRecursive() (order []*Node) {
 		}
 
 		if !s.IsEmpty() {
-			node = s.Pop().(*Node)
+			node = s.Pop().(*Btree)
 			order = append(order, node)
 			node = node.Right
 		}
@@ -253,10 +225,10 @@ func (tree *Btree) InOrderNonRecursive() (order []*Node) {
 // this only happen when whole left child turned off and we start printing data from there.
 //
 // InOrderMorris return the IN order traversal based on threaded binary tree
-func (tree *Btree) InOrderMorris() (order []*Node) {
+func (tree *Btree) InOrderMorris() (order []*Btree) {
 
-	current := (*Node)(tree)
-	var preNode *Node
+	current := tree
+	var preNode *Btree
 
 	for current != nil {
 		if current.Left == nil {
@@ -287,27 +259,27 @@ func (tree *Btree) InOrderMorris() (order []*Node) {
 }
 
 // PostOrder return the post order traversal
-func (tree *Btree) PostOrder() (order []*Node) {
+func (tree *Btree) PostOrder() (order []*Btree) {
 
 	if tree != nil {
-		order = append(order, (*Btree)(tree.Left).PostOrder()...)
-		order = append(order, (*Btree)(tree.Right).PostOrder()...)
-		order = append(order, (*Node)(tree))
+		order = append(order, tree.Left.PostOrder()...)
+		order = append(order, tree.Right.PostOrder()...)
+		order = append(order, tree)
 
 	}
 	return order
 }
 
 // PostOrderMorris return the POST order traversal based on threaded binary tree
-func (tree *Btree) PostOrderMorris() (order []*Node) {
+func (tree *Btree) PostOrderMorris() (order []*Btree) {
 
-	dummyRoot := &Node{}
+	dummyRoot := new(Btree)
 	// why link tree to the dummyRoot.Left ?
 	// Because if we assume there is no right child of root then print
 	// left child and then root become POST-order traversal
-	dummyRoot.Left = (*Node)(tree)
+	dummyRoot.Left = tree
 
-	var preNode, first, middle, last *Node
+	var preNode, first, middle, last *Btree
 	current := dummyRoot
 
 	for current != nil {
@@ -366,14 +338,14 @@ func (tree *Btree) PostOrderMorris() (order []*Node) {
 }
 
 // PostOrderNonRecursive return the post order traversal
-func (tree *Btree) PostOrderNonRecursive() (order []*Node) {
+func (tree *Btree) PostOrderNonRecursive() (order []*Btree) {
 	if tree == nil {
 		return
 	}
 
-	current := (*Node)(tree)
+	current := tree
 
-	var lastVisited *Node
+	var lastVisited *Btree
 
 	s := stack.NewStack(10)
 
@@ -384,7 +356,7 @@ func (tree *Btree) PostOrderNonRecursive() (order []*Node) {
 	}
 
 	for !s.IsEmpty() {
-		current = s.Peek().(*Node)
+		current = s.Peek().(*Btree)
 		// hand the root node
 		if current.Right == nil || current.Right == lastVisited {
 			order = append(order, current)
@@ -403,14 +375,14 @@ func (tree *Btree) PostOrderNonRecursive() (order []*Node) {
 }
 
 // PostOrderNonRecursiveV1 return the post order traversal
-func (tree *Btree) PostOrderNonRecursiveV1() (order []*Node) {
+func (tree *Btree) PostOrderNonRecursiveV1() (order []*Btree) {
 	if tree == nil {
 		return
 	}
 
-	current := (*Node)(tree)
+	current := tree
 
-	var lastVisited *Node
+	var lastVisited *Btree
 
 	s := stack.NewStack(10)
 
@@ -418,7 +390,7 @@ func (tree *Btree) PostOrderNonRecursiveV1() (order []*Node) {
 	s.Push(current)
 
 	for !s.IsEmpty() {
-		current = s.Peek().(*Node)
+		current = s.Peek().(*Btree)
 
 		// root node
 		if (current.Left == nil && current.Right == nil) || (lastVisited != nil && (lastVisited == current.Left || lastVisited == current.Right)) {
@@ -441,7 +413,7 @@ func (tree *Btree) PostOrderNonRecursiveV1() (order []*Node) {
 }
 
 // PostOrderNonRecursiveV2 return the post order traversal
-func (tree *Btree) PostOrderNonRecursiveV2() (order []*Node) {
+func (tree *Btree) PostOrderNonRecursiveV2() (order []*Btree) {
 
 	if tree == nil {
 		return
@@ -450,13 +422,13 @@ func (tree *Btree) PostOrderNonRecursiveV2() (order []*Node) {
 	s1 := stack.NewStack(10)
 	s2 := stack.NewStack(10)
 
-	current := (*Node)(tree)
+	current := tree
 	s1.Push(current)
 
 	// push order: root node -> left tree -> right tree
 	for !s1.IsEmpty() {
 
-		current = s1.Pop().(*Node)
+		current = s1.Pop().(*Btree)
 		s2.Push(current)
 
 		if current.Left != nil {
@@ -472,14 +444,14 @@ func (tree *Btree) PostOrderNonRecursiveV2() (order []*Node) {
 	// reverse the s1, right tree -> left tree -> root node, get the POST traversal order
 	for !s2.IsEmpty() {
 
-		order = append(order, s2.Pop().(*Node))
+		order = append(order, s2.Pop().(*Btree))
 	}
 
 	return
 }
 
 // LevelOrder return the level order traversal
-func (tree *Btree) LevelOrder() (order []*Node) {
+func (tree *Btree) LevelOrder() (order []*Btree) {
 
 	if tree == nil {
 		return
@@ -488,13 +460,13 @@ func (tree *Btree) LevelOrder() (order []*Node) {
 
 	queue := queue.NewQueue()
 
-	current := (*Node)(tree)
+	current := tree
 
 	queue.Enqueue(current)
 
 	for !queue.IsEmpty() {
 
-		current = queue.Dequeue().(*Node)
+		current = queue.Dequeue().(*Btree)
 		order = append(order, current)
 
 		if current.Left != nil {
@@ -510,161 +482,80 @@ func (tree *Btree) LevelOrder() (order []*Node) {
 	return
 }
 
-// Find the specified node
-func (tree *Btree) Find(o base.Comparable) (node *Node) {
+func (tree *Btree) Depth() int {
+	if tree == nil {
+		return 0
+	}
+
+	return maxInt(tree.Right.Depth(), tree.Left.Depth()) + 1
+}
+
+func (tree *Btree) VerticalPretty() *bytes.Buffer {
+
+	if tree == nil {
+		return nil
+	}
+
+	return vertical([]*Btree{tree}, 1, tree.Depth())
+}
+
+func (tree *Btree) horizontal(isRight bool, indent string) (buffer *bytes.Buffer) {
+
+	buffer = new(bytes.Buffer)
+
 	if tree == nil {
 		return
 	}
 
-	current := (*Node)(tree)
+	if tree.Right != nil {
+		var rIndent string
+		if isRight {
+			rIndent = indent + "       "
+		} else {
+			rIndent = indent + " |     "
+		}
+		tree.Right.horizontal(true, rIndent).WriteTo(buffer)
+	}
 
-	result := current.Element.CompareTo(o)
-
-	if result < 0 {
-
-		return (*Btree)(current.Right).Find(o)
-	} else if result > 0 {
-		return (*Btree)(current.Left).Find(o)
+	buffer.WriteString(indent)
+	if isRight {
+		buffer.WriteString(" /")
 	} else {
-		node = current
+		buffer.WriteString(" \\")
 	}
+	buffer.WriteString("---- ")
+	buffer.WriteString(tree.Element.String() + "\n")
 
-	return
-}
-// Find the specified node
-func (tree *Btree) FindNonRecursive(o base.Comparable) (node *Node) {
-	if tree == nil {
-		return
-	}
-
-	node = (*Node)(tree)
-
-	var result int
-
-	for node != nil {
-		result = node.Element.CompareTo(o)
-
-		if result == 0 {
-			return
-		} else if result > 0 {
-			node = node.Left
+	if tree.Left != nil {
+		var lIndent string
+		if isRight {
+			lIndent = indent + " |     "
 		} else {
-			node = node.Right
+			lIndent = indent + "       "
 		}
+		tree.Left.horizontal(false, lIndent).WriteTo(buffer)
 	}
 
 	return
 }
 
-// FindMin return minimum node
-func (tree *Btree) FindMin() *Node {
-	if tree == nil {
-		return nil
-	}
-
-	current := (*Node)(tree)
-
-	if current.Left == nil {
-		return current
-	}
-
-	return (*Btree)(current.Left).FindMin()
-}
-
-// FindMinNonRecursive return minimum node
-func (tree *Btree) FindMinNonRecursive() *Node {
-	if tree == nil {
-		return nil
-	}
-
-	current := (*Node)(tree)
-	for current.Left != nil {
-		current = current.Left
-	}
-	return current
-}
-
-
-// FindMax return maximum node
-func (tree *Btree) FindMax() *Node {
+func (tree *Btree) HorizontalPretty() (buffer *bytes.Buffer) {
 
 	if tree == nil {
-		return nil
-	}
-
-	current := (*Node)(tree)
-
-	if current.Right == nil {
-		return current
-	}
-
-	return (*Btree)(current.Right).FindMax()
-}
-
-// FindMaxNonRecursive return maximum node
-func (tree *Btree) FindMaxNonRecursive() *Node {
-	if tree == nil {
-		return nil
-	}
-
-	current := (*Node)(tree)
-
-	for current.Right != nil {
-		current = current.Right
-	}
-	return current
-}
-
-// Insert a value and return a inserted tree
-func (tree *Btree) Insert(o base.Comparable) (aTree *Btree) {
-
-	aTree = tree
-
-
-	if aTree == nil {
-		aTree = (*Btree)(&Node{Element: o})
-	} else if (o.CompareTo(tree.Element)) < 0 {
-		aTree.Left = (*Node)((*Btree)(aTree.Left).Insert(o))
-
-	} else if (o.CompareTo(tree.Element)) > 0 {
-		aTree.Right = (*Node)((*Btree)(aTree.Right).Insert(o))
-	}
-
-	return aTree
-}
-
-// InsertNonRecursive insert a value non-recursive
-func (tree *Btree) InsertNonRecursive(o base.Comparable) (aTree *Btree) {
-
-	aTree = tree
-
-	if aTree == nil {
-		aTree = (*Btree)(&Node{Element: o})
 		return
 	}
 
-	current := (*Node)(aTree)
+	buffer = new(bytes.Buffer)
 
-	for {
-		if o.CompareTo(current.Element) < 0 {
-			if current.Left == nil {
-				current.Left = &Node{Element: o}
-				return
-			} else {
-				current = current.Left
-			}
-
-		} else if o.CompareTo(current.Element) > 0 {
-			if current.Right == nil {
-				current.Right = &Node{Element: o}
-				return
-			} else {
-				current = current.Right
-			}
-
-		} else {
-			return
-		}
+	if tree.Right != nil {
+		tree.Right.horizontal(true, "").WriteTo(buffer)
 	}
+
+	buffer.WriteString(tree.Element.String() + "\n")
+
+	if tree.Left != nil {
+		tree.Left.horizontal(false, "").WriteTo(buffer)
+	}
+
 	return
 }

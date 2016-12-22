@@ -1,13 +1,8 @@
 package stack
 
-import "errors"
-
 type stack struct {
 	data []interface{}
 }
-
-// ErrEmptyStack describes the empty stack error
-var ErrEmptyStack = errors.New("stack is empty")
 
 // NewStack return a new stack
 // The stack storage capacity will auto increase because the underground
@@ -38,8 +33,8 @@ func (s *stack) Push(value interface{}) {
 // Pop the top item out, if stack is empty, will return nil
 func (s *stack) Pop() interface{} {
 	if s.Len() > 0 {
-		rect := s.data[s.Len()-1]
-		s.data = s.data[:s.Len()-1]
+		rect := s.data[s.Len() - 1]
+		s.data = s.data[:s.Len() - 1]
 		return rect
 	}
 	return nil
@@ -48,7 +43,7 @@ func (s *stack) Pop() interface{} {
 // Peek return and not pop the top item
 func (s *stack) Peek() interface{} {
 	if s.Len() > 0 {
-		return s.data[s.Len()-1]
+		return s.data[s.Len() - 1]
 	}
 	return nil
 }
