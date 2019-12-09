@@ -1,4 +1,4 @@
-package tree
+package binarytree
 
 import (
 	"bytes"
@@ -213,6 +213,7 @@ func (tree *Btree) InOrderNonRecursive() (order []*Btree) {
 	return order
 }
 
+// InOrderMorris return the IN order traversal based on threaded binary tree.
 // In In-Order, the right node of current node's predecessor always is nil
 // In In-order traversal, start from root node
 // 1. if current node has left child then find its in-order predecessor and
@@ -223,8 +224,6 @@ func (tree *Btree) InOrderNonRecursive() (order []*Btree) {
 // The main thing which should be observe is that while performing step 1,
 // we'll reach a point where predecessor right child is itself current node,
 // this only happen when whole left child turned off and we start printing data from there.
-//
-// InOrderMorris return the IN order traversal based on threaded binary tree
 func (tree *Btree) InOrderMorris() (order []*Btree) {
 
 	current := tree
@@ -482,6 +481,7 @@ func (tree *Btree) LevelOrder() (order []*Btree) {
 	return
 }
 
+// Depth return depth of the tree.
 func (tree *Btree) Depth() int {
 	if tree == nil {
 		return 0
@@ -490,6 +490,7 @@ func (tree *Btree) Depth() int {
 	return maxInt(tree.Right.Depth(), tree.Left.Depth()) + 1
 }
 
+// VerticalPretty print the tree in vertical format.
 func (tree *Btree) VerticalPretty() *bytes.Buffer {
 
 	if tree == nil {
@@ -539,6 +540,7 @@ func (tree *Btree) horizontal(isRight bool, indent string) (buffer *bytes.Buffer
 	return
 }
 
+// HorizontalPretty print the tree in horizontal pretty format.
 func (tree *Btree) HorizontalPretty() (buffer *bytes.Buffer) {
 
 	if tree == nil {

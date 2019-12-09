@@ -1,11 +1,9 @@
-package tree
+package binarytree
 
 import (
-	"testing"
 	"github.com/aiden0z/kit/base"
+	"testing"
 )
-
-
 
 func TestNewBtreeWithPreInOrder(t *testing.T) {
 	preOrder := base.NewIntComparableSlice([]int{7, 10, 4, 3, 1, 2, 8, 11})

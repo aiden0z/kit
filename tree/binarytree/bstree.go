@@ -14,7 +14,7 @@
 // IN-Order:    1, 2, 3, 5, 6, 8, 9, 10, 11
 // POST-Order:  1, 2, 5, 3, 8, 11, 10, 9, 6
 
-package tree
+package binarytree
 
 import (
 	"bytes"
@@ -67,7 +67,7 @@ func (tree *BSTree) Find(o base.Comparable) (node *BSTree) {
 	return
 }
 
-// Find the specified node
+// FindNonRecursive find the code without recursive.
 func (tree *BSTree) FindNonRecursive(o base.Comparable) (node *BSTree) {
 	if tree == nil {
 		return
@@ -184,29 +184,28 @@ func (tree *BSTree) InsertNonRecursive(o base.Comparable) (node *BSTree) {
 			if current.Left == nil {
 				current.Left = &Btree{Element: o}
 				return
-			} else {
-				current = current.Left
 			}
+			current = current.Left
 
 		} else if o.CompareTo(current.Element) > 0 {
 			if current.Right == nil {
 				current.Right = &Btree{Element: o}
 				return
-			} else {
-				current = current.Right
 			}
+			current = current.Right
 
 		} else {
 			return
 		}
 	}
-	return
 }
 
+// VerticalPretty print the tree in vertical format.
 func (tree *BSTree) VerticalPretty() *bytes.Buffer {
 	return (*Btree)(tree).VerticalPretty()
 }
 
+// HorizontalPretty print the tree in horizontal format.
 func (tree *BSTree) HorizontalPretty() *bytes.Buffer {
 	return (*Btree)(tree).HorizontalPretty()
 }
